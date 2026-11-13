@@ -8,7 +8,7 @@ from pydantic import ValidationError
 from app.models.calculation import CalculationType
 from app.operations.factory import CalculationFactory
 from app.schemas.calculation import CalculationCreate
-
+from app.models.calculation import Calculation
 
 @pytest.mark.parametrize(
     "operation,a,b,expected",
@@ -78,3 +78,18 @@ def test_factory_selects_correct_function():
     operation = CalculationFactory.get_operation("Add")
 
     assert operation(7, 3) == 10
+
+def test_calculation_repr():
+    calculation = Calculation(
+        a=10,
+        b=5,
+        type="Add",
+        result=15,
+    )
+    calculation.id = 1
+
+    text = repr(calculation)
+
+    assert "Calculation" in text
+    assert "Add" in text
+    assert "15" in text
