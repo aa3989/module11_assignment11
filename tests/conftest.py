@@ -15,7 +15,7 @@ from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 
 from app.database import Base, get_engine, get_sessionmaker
-from app.models.user import User
+from app.models import User, Calculation
 from app.config import settings
 from app.database_init import init_db, drop_db
 
