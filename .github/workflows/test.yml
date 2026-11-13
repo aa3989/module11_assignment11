@@ -79,12 +79,12 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - name: Build image
-        run: docker build -t assignment10:scan .
+        run: docker build -t assignment11:scan .
       - name: Scan with Trivy
         uses: aquasecurity/trivy-action@v0.36.0
         with:
           scan-type: image
-          image-ref: assignment10:scan
+          image-ref: assignment11:scan
           format: table
           exit-code: "1"
           ignore-unfixed: true
@@ -92,13 +92,13 @@ jobs:
           skip-files: "**/pip/_vendor/bom.cdx.json"
       - name: Save scanned image for deployment
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: docker save assignment10:scan | gzip > assignment10-image.tar.gz
+        run: docker save assignment11:scan | gzip > assignment11-image.tar.gz
       - name: Upload scanned image
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: actions/upload-artifact@v5
         with:
-          name: assignment10-scanned-image
-          path: assignment10-image.tar.gz
+          name: assignment11-scanned-image
+          path: assignment11-image.tar.gz
           retention-days: 1
           compression-level: 0
 
@@ -111,9 +111,9 @@ jobs:
       - name: Download scanned image
         uses: actions/download-artifact@v6
         with:
-          name: assignment10-scanned-image
+          name: assignment11-scanned-image
       - name: Load scanned image
-        run: gunzip -c assignment10-image.tar.gz | docker load
+        run: gunzip -c assignment11-image.tar.gz | docker load
       - name: Check Docker Hub credentials
         env:
           DOCKERHUB_USERNAME: ${{ vars.DOCKERHUB_USERNAME }}
@@ -131,8 +131,8 @@ jobs:
           DOCKERHUB_USERNAME: ${{ vars.DOCKERHUB_USERNAME }}
           COMMIT_SHA: ${{ github.sha }}
         run: |
-          IMAGE="${DOCKERHUB_USERNAME}/assignment10"
-          docker tag assignment10:scan "${IMAGE}:latest"
-          docker tag assignment10:scan "${IMAGE}:${COMMIT_SHA}"
+          IMAGE="${DOCKERHUB_USERNAME}/assignment11"
+          docker tag assignment11:scan "${IMAGE}:latest"
+          docker tag assignment11:scan "${IMAGE}:${COMMIT_SHA}"
           docker push "${IMAGE}:latest"
           docker push "${IMAGE}:${COMMIT_SHA}"
